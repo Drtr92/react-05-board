@@ -66,6 +66,14 @@
     color: #666;
 }
 
+.link {
+    color: #333;
+}
+
+.link:hover {
+    color: #191969;
+}
+
 
 
 
