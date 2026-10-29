@@ -1,4 +1,4 @@
-// 이 파일은 글 상세 화면을 담당하는 컴포넌트 파일
+// 이 파일은 글 상세 화면을 담당하는 컴포넌트 파일!
 
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
