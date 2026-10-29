@@ -58,7 +58,7 @@ function Detail() {
                     <span style={{ margin: "0 12px" }}>|</span>
                     <span>작성자 : {post.userId}</span>
                 </div>
-                <div>{post.body}</div>
+                <div className={styles.body}>{post.body}</div>
             </article>
         </div>
     );
