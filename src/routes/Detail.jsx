@@ -35,8 +35,7 @@ function Detail() {
                 setPost(json);
                 setLoading(false);
             })
-            .catch(err => console.log(err))
-        ;
+            .catch(err => console.log(err));
     }, [id]);
 
     if (loading) {
@@ -49,7 +48,9 @@ function Detail() {
 
     return (
         <div className={styles.container}>
-            <Link className={styles.backlink} to={"/"}>&larr; 목록으로 돌아가기</Link>
+            <Link className={styles.backlink} to={"/"}>
+                &larr; 목록으로 돌아가기
+            </Link>
 
             <article className={styles.article}>
                 <h1 className={styles.title}>{post.title}</h1>
