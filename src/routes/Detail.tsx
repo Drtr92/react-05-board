@@ -1,67 +1,94 @@
-// 이 파일은 글 상세 화면을 담당하는 컴포넌트 파일!
-
 import { Link, useParams } from "react-router";
 import { useEffect, useState } from "react";
-import styles from "./Detail.module.css";
+import type { Post } from "../types/post.ts";
+import { StyledContainer, StyledLoading } from "../styles/commonStyles.ts";
+import styled from "styled-components";
+
+const Article = styled.article`
+    padding-top: 40px;
+`;
+
+const BackLink = styled(Link)`
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 32px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: #f1f3f5;
+    border: 1px solid #666;
+
+    &:hover {
+        background-color: #e9ecef;
+        color: #0077ff;
+    }
+`;
+
+const Title = styled.h1`
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 24px;
+`;
+
+const Meta = styled.div`
+    color: #888;
+    margin-bottom: 40px;
+`;
+
+const Body = styled.div`
+    font-size: 1.15rem;
+    line-height: 1.8;
+    white-space: pre-wrap; /* '\\n'이라고 하는 줄바꿈 기호를 줄바꿈 처리로 사용하겠다 */
+`;
 
 function Detail() {
-    // React-router가 갖고 있는 "id" 라는 이름을 붙인 값을 꺼내와야 함
-    // 사용자가 "10번 글을 보고싶어" 10이라는 값은 URL 경로에서 react-router가 갖게 된 것
-    // react-router가 "경로"에서 꺼내어 저장하고 있는 값은 useParams() 에서 구할 수 있음
+    // 경로 상에 존재하는 값을 react-router 가 가지고 있고, 그걸 꺼내오는 함수
+    // /3242df2fhb2
+    // 이렇게 동적 라우팅에서 꺼내온 값은 무조건 string
+    // id값은 무조건 존재하는가?  => useParams 라는 메서드는 실행 되기 전, 설계도 상황으로 생각
+    const { id } = useParams(); // id의 타입은 string | undefined
 
-    // useParams() 는 이 컴포넌트를 띄울 때 react-router가 갖고 있는 { id: 값 }
-    const { id } = useParams();
-    // URL은 무조건 string
-
-    // 나 10번글 내용 받고 싶어 라고 백엔드에게 요청하고, 그 데이터를 가지고 화면을 출력
-
-    // Home 컴포넌트에서는 "목록"을 다루는 컴포넌트였고   => 초기값도 [], 저장 후도 []
-    // Detail 컴포넌트는 "글 상세" 를 다루는 컴포넌트임
-
-    // 글 하나에 대해서 백엔드가 보내는 객체 모양은
-    // { userId: number, title: string, body: string, id: number }
-    // 데이터가 도착되기 이전의 state 초기값은?
-    // 변수의 모양을 잡을 때 '객체'라면 그 모양은 유지하고 있어야 함
-    // post는 내가 임의로 객체를 만들어서 넣지 않고
-    // 순수히 받아온 데이터만 들어가야 되는 state => 아직 데이터를 받지 않았다는 의미로 'null'
-
-    const [post, setPost] = useState(null);
+    const [post, setPost] = useState<Post | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
             .then(res => res.json())
-            .then(json => {
+            .then((json: Post) => {
                 setPost(json);
                 setLoading(false);
             })
-            .catch(err => console.log(err));
+            .catch((err: unknown) => {
+                if (err instanceof Error) {
+                    console.log(err.message);
+                } else {
+                    console.log(err);
+                }
+            });
     }, [id]);
 
     if (loading) {
-        return <div className={styles.loading}>본문을 불러오는 중입니다...</div>;
+        return <StyledLoading>본문을 불러오는 중입니다...</StyledLoading>;
     }
 
     if (!post) {
-        return <div className={styles.loading}>존재하지 않는 게시글입니다.</div>;
+        return <StyledLoading>존재하지 않는 게시글입니다.</StyledLoading>;
     }
 
     return (
-        <div className={styles.container}>
-            <Link className={styles.backlink} to={"/"}>
-                &larr; 목록으로 돌아가기
-            </Link>
+        <StyledContainer>
+            <BackLink to={"/"}>&larr; 목록으로 돌아가기</BackLink>
 
-            <article className={styles.article}>
-                <h1 className={styles.title}>{post.title}</h1>
-                <div className={styles.meta}>
+            <Article>
+                <Title>{post.title}</Title>
+                <Meta>
                     <span>게시물 번호 : {post.id}</span>
                     <span style={{ margin: "0 12px" }}>|</span>
                     <span>작성자 : {post.userId}</span>
-                </div>
-                <div className={styles.body}>{post.body}</div>
-            </article>
-        </div>
+                </Meta>
+                <Body>{post.body}</Body>
+            </Article>
+        </StyledContainer>
     );
 }
 

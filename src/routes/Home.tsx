@@ -2,13 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { StyledContainer, StyledLoading } from "../styles/commonStyles.ts";
 import styled from "styled-components";
-
-type Post = {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-};
+import type { Post } from "../types/post.ts";
 
 const Title = styled.h1`
     font-size: 1.8rem;
